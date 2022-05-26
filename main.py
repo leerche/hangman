@@ -11,7 +11,7 @@ game = game_factory.make_game()
 game.tip("a")
 game.tip("b")
 game.tip("y")
-tips = game.tips()
+tips = game.tips
 correct_tips = game.correct_tips()
 missing_tips = game.missing_tips()
 word_status = game.word_status()
