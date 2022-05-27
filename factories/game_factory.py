@@ -1,7 +1,7 @@
-from Game import Game
-from Player import Player
-from Word import Word
-from Config import Config
+from models.config import Config
+from models.game import Game
+from models.player import Player
+from models.word import Word
 
 
 class GameFactory:
