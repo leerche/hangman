@@ -5,7 +5,6 @@ from models.player import Player
 from models.word import Word
 from models.config import Config
 
-
 game_factory = GameFactory(Player("Lea"), Word("Hallo"), Config(string.ascii_lowercase, 7))
 
 game = game_factory.make_game()

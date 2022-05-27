@@ -10,6 +10,13 @@ class TestGameMethods(unittest.TestCase):
     def setUp(self):
         self.game = Game(Player("Lea"), Word("Hallo"), Config(string.ascii_lowercase, 8))
 
+    def test_tips(self):
+        self.assertSetEqual(self.game.tips, set())
+        self.game.tip("s")
+        self.game.tip("A")
+        self.game.tip("s")
+        self.assertSetEqual(self.game.tips, set(["s", "a"]))
+
     def test_tip_amount(self):
         self.assertEqual(0, self.game.tip_amount())
         self.game.tip("L")
@@ -49,7 +56,7 @@ class TestGameMethods(unittest.TestCase):
         missing_tips = set(["h", "a", "l", "o"])
         self.assertSetEqual(self.game.missing_tips(), missing_tips)
         self.game.tip("o")
-        missing_tips.pop()
+        missing_tips.remove("o")
         self.assertSetEqual(self.game.missing_tips(), missing_tips)
 
     def test_invalid_char(self):
