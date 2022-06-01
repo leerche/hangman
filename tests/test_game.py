@@ -11,11 +11,18 @@ class TestGameMethods(unittest.TestCase):
         self.game = Game(Player("Lea"), Word("Hallo"), Config(string.ascii_lowercase, 8))
 
     def test_tips(self):
-        self.assertSetEqual(self.game.tips, set())
+        self.assertListEqual(self.game.tips, list())
         self.game.tip("s")
         self.game.tip("A")
         self.game.tip("s")
-        self.assertSetEqual(self.game.tips, set(["s", "a"]))
+        self.assertListEqual(self.game.tips, list(["s", "a", "s"]))
+
+    def test_unique_tips(self):
+        self.assertSetEqual(self.game.unique_tips(), set())
+        self.game.tip("s")
+        self.game.tip("A")
+        self.game.tip("s")
+        self.assertSetEqual(self.game.unique_tips(), set(["s", "a"]))
 
     def test_tip_amount(self):
         self.assertEqual(0, self.game.tip_amount())
@@ -41,15 +48,15 @@ class TestGameMethods(unittest.TestCase):
 
     def test_wrong_tips(self):
         wrong_tips = set()
-        self.assertSetEqual(self.game.wrong_tip(), wrong_tips)
+        self.assertSetEqual(self.game.wrong_tips(), wrong_tips)
         self.game.tip("p")
         wrong_tips.add("p")
-        self.assertSetEqual(self.game.wrong_tip(), wrong_tips)
+        self.assertSetEqual(self.game.wrong_tips(), wrong_tips)
         self.game.tip("x")
         wrong_tips.add("x")
-        self.assertSetEqual(self.game.wrong_tip(), wrong_tips)
+        self.assertSetEqual(self.game.wrong_tips(), wrong_tips)
         self.game.tip("l")
-        self.assertSetEqual(self.game.wrong_tip(), wrong_tips)
+        self.assertSetEqual(self.game.wrong_tips(), wrong_tips)
     
     def test_missing_tips(self):
         missing_tips = set()
@@ -62,3 +69,44 @@ class TestGameMethods(unittest.TestCase):
     def test_invalid_char(self):
         with self.assertRaises(ValueError):
             self.game.tip("1")
+
+    def test_is_won(self):
+        self.game.tip("h")
+        self.assertFalse(self.game.isWon())
+        self.game.tip("a")
+        self.game.tip("l")
+        self.game.tip("o")
+        self.assertTrue(self.game.isWon())
+
+    def test_is_lost(self):
+        self.assertFalse(self.game.isLost())
+        self.game.tip("x")
+        self.game.tip("y")
+        self.game.tip("z")
+        self.game.tip("b")
+        self.game.tip("c")
+        self.game.tip("g")
+        self.game.tip("p")
+        self.game.tip("r")
+        self.assertFalse(self.game.isLost())
+        self.game.tip("n")
+        self.assertTrue(self.game.isLost())
+
+    def test_wrong_tip_amount(self):
+        self.assertEqual(self.game.wrong_tip_amount(), 0)
+        self.game.tip("x")
+        self.game.tip("y")
+        self.game.tip("h")
+        self.assertEqual(self.game.wrong_tip_amount(), 2)
+
+    def test_solvable_error(self):
+        with self.assertRaises(ValueError):
+            Game(Player("lea"), Word("ü1"), Config(string.ascii_lowercase, 8))
+        
+    def test_game_finished_error(self):
+        with self.assertRaises(ValueError):
+            self.game.tip("h")
+            self.game.tip("a")
+            self.game.tip("l")
+            self.game.tip("o")
+            self.game.tip("k")

@@ -11,6 +11,4 @@ class GameFactory:
         self.config = config
 
     def make_game(self) -> Game:
-        if not self.word.solvable(self.config.charset):
-            raise ValueError("The word is not solveable with the selected charset.")
         return Game(self.player, self.word, self.config)
