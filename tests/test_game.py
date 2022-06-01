@@ -72,13 +72,16 @@ class TestGameMethods(unittest.TestCase):
     def test_is_won(self):
         self.game.tip("h")
         self.assertFalse(self.game.isWon())
+        self.assertFalse(self.game.isFinished())
         self.game.tip("a")
         self.game.tip("l")
         self.game.tip("o")
         self.assertTrue(self.game.isWon())
+        self.assertTrue(self.game.isFinished())
 
     def test_is_lost(self):
         self.assertFalse(self.game.isLost())
+        self.assertFalse(self.game.isFinished())
         self.game.tip("x")
         self.game.tip("y")
         self.game.tip("z")
@@ -90,6 +93,7 @@ class TestGameMethods(unittest.TestCase):
         self.assertFalse(self.game.isLost())
         self.game.tip("n")
         self.assertTrue(self.game.isLost())
+        self.assertTrue(self.game.isFinished())
 
     def test_wrong_tip_amount(self):
         self.assertEqual(self.game.wrong_tip_amount(), 0)
