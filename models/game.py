@@ -2,7 +2,7 @@ from models.config import Config
 from models.word import Word
 from models.player import Player
 
-class Game:
+class Game(object):
     def __init__(self, player: Player, word: Word, config: Config):
         if not word.solvable(config.charset):
             raise ValueError("The word is not solveable with the selected charset.")
