@@ -30,7 +30,7 @@ class Game:
         return len(self.tips)
 
     def isWon(self) -> bool:
-        return self.word.solved(set(self.tips))
+        return self.word.solved(self.unique_tips())
 
     def isLost(self) -> bool:
         return self.wrong_tip_amount() > self.config.wrong_tip_amount
