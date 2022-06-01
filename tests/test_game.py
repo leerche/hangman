@@ -59,7 +59,6 @@ class TestGameMethods(unittest.TestCase):
         self.assertSetEqual(self.game.wrong_tips(), wrong_tips)
     
     def test_missing_tips(self):
-        missing_tips = set()
         missing_tips = set(["h", "a", "l", "o"])
         self.assertSetEqual(self.game.missing_tips(), missing_tips)
         self.game.tip("o")
