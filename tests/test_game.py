@@ -113,3 +113,7 @@ class TestGameMethods(unittest.TestCase):
             self.game.tip("l")
             self.game.tip("o")
             self.game.tip("k")
+    
+    def test_no_tip_provided_error(self):
+        with self.assertRaises(ValueError):
+            self.game.tip("")
