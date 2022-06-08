@@ -1,9 +1,11 @@
 import sys
 from PyQt6.QtWidgets import *
+from PyQt6 import *
 
 from controller.game_controller import GameController
 
 class StartGameForm(QDialog):
+
     def __init__(self, controller: GameController):
         super().__init__()
         self.controller = controller
@@ -49,8 +51,6 @@ class StartGameForm(QDialog):
             self.time_limit.hide()
             self.time_limit_label.hide()
 
-    def accept(self):
-        self.controller.start(self.name_input.text(), self.mode_input.currentData(), self.time_limit.value())
 class MainWindow(QMainWindow):
 
     def __init__(self):
@@ -59,11 +59,10 @@ class MainWindow(QMainWindow):
         self.initUI()
 
     def initUI(self):
+        self.start_game_button = QPushButton("Start Game", self)
+        self.start_game_button.move(175, 150)
 
-        btn1 = QPushButton("Start Game", self)
-        btn1.move(175, 150)
-
-        btn1.clicked.connect(self.buttonClicked)
+        self.start_game_button.clicked.connect(self.buttonClicked)
 
         self.statusBar()
 
@@ -73,7 +72,28 @@ class MainWindow(QMainWindow):
 
     def buttonClicked(self):
         self.w = StartGameForm(self.controller)
-        self.w.show()
+        self.w.open()
+        self.w.accepted.connect(self.startGame)
+    
+    def startGame(self):
+        self.controller.start(self.w.name_input.text(), self.w.mode_input.currentData(), self.w.time_limit.value())
+        self.start_game_button.deleteLater()
+        
+        self.tip_button = QPushButton("Tip", self)
+        self.tip_button.clicked.connect(self.tip)
+
+        self.tip_input = QLineEdit()
+        self.tip_input.move(0,0)
+        self.tip_input.move(0,100)
+
+        game_layout = QGridLayout()
+        game_layout.addItem(self.tip_input, 0, 0)
+        game_layout.addItem(self.tip_button,0, 1)
+
+        self.setLayout(game_layout)
+
+    def tip(self):
+        self.controller.tip(self.tip_input.text())
 
 def main():
 
