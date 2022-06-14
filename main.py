@@ -1,6 +1,7 @@
 import sys
 from PyQt6.QtWidgets import *
 from PyQt6 import *
+from PyQt6.QtCore import Qt, QTimer, QTime
 
 from controller.game_controller import GameController
 
@@ -40,6 +41,7 @@ class StartGameForm(QDialog):
         self.time_limit.hide()
         self.time_limit_label = QLabel("Zeitlimit (Minuten):")
         self.time_limit_label.hide()
+
         self.form_layout.addRow(self.time_limit_label, self.time_limit)
         self.formGroupBox.setLayout(self.form_layout)
 
@@ -51,14 +53,56 @@ class StartGameForm(QDialog):
             self.time_limit.hide()
             self.time_limit_label.hide()
 
+
 class MainWindow(QMainWindow):
 
     def __init__(self):
         self.controller = GameController()
         super().__init__()
+        central_widget = QWidget()
+        self.tip_button = QPushButton("Tip", self)
+        self.tip_button.clicked.connect(self.tip)
+
+        self.tip_input = QLineEdit()
+        self.tip_input.returnPressed.connect(self.tip)
+
+        self.used_characters = QLabel("Benutzte Zeichen: ")
+        self.word_status = QLabel()
+
+        self.tip_amount = QLabel()
+        self.correct_tip_amount = QLabel()
+
+        self.timer = QTimer()
+        self.curr_time = QTime(00,00,00)
+        self.timer.timeout.connect(self.showTime)
+        self.timer.start(1000) # doesn't work in start game?
+
+        self.time = QLabel("Zeit: ")
+
+        game_layout = QGridLayout()
+
+        game_layout.addWidget(self.time, 5, 1)
+
+        game_layout.addWidget(self.used_characters, 1, 1)
+
+        game_layout.addWidget(self.tip_amount, 1, 2)
+        game_layout.addWidget(self.correct_tip_amount, 1, 3)
+
+        game_layout.addWidget(self.word_status, 2, 1, 1, 3, Qt.AlignmentFlag.AlignCenter)
+
+        game_layout.addWidget(self.tip_input, 3, 1)
+        game_layout.addWidget(self.tip_button, 3, 2)
+
+
+        central_widget.setLayout(game_layout)
+
+        self.setCentralWidget(central_widget)
+        self.centralWidget().hide()
         self.initUI()
 
+
     def initUI(self):
+
         self.start_game_button = QPushButton("Start Game", self)
         self.start_game_button.move(175, 150)
 
@@ -78,22 +122,47 @@ class MainWindow(QMainWindow):
     def startGame(self):
         self.controller.start(self.w.name_input.text(), self.w.mode_input.currentData(), self.w.time_limit.value())
         self.start_game_button.deleteLater()
-        
-        self.tip_button = QPushButton("Tip", self)
-        self.tip_button.clicked.connect(self.tip)
-
-        self.tip_input = QLineEdit()
-        self.tip_input.move(0,0)
-        self.tip_input.move(0,100)
-
-        game_layout = QGridLayout()
-        game_layout.addItem(self.tip_input, 0, 0)
-        game_layout.addItem(self.tip_button,0, 1)
-
-        self.setLayout(game_layout)
+        self.timer.startTimer(1000)
+        self.updateWordStatus()
+        self.updateCorrectTipAmount()
+        self.updateTipAmount()
+        self.centralWidget().show()
 
     def tip(self):
         self.controller.tip(self.tip_input.text())
+        self.resetTipInput()
+        self.updateWordStatus()
+        self.updateUsedCharacters()
+        self.updateCorrectTipAmount()
+        self.updateTipAmount()
+        self.checkGameStatus()
+
+
+    def updateCorrectTipAmount(self):
+        self.correct_tip_amount.setText("davon Richtig: " + self.controller.correct_tip_amount())
+
+    def updateTipAmount(self):
+        self.tip_amount.setText("Anzahl Tips: " + self.controller.tip_amount())
+
+    def updateUsedCharacters(self):
+        self.used_characters.setText("Benutzte Zeichen: " + self.controller.tips())
+    
+    def updateWordStatus(self):
+        self.word_status.setText(self.controller.word_status())
+
+    def checkGameStatus(self):
+        if self.controller.isWon():
+            print("Gewonnen")
+        elif self.controller.isLost():
+            print("Verloren")
+    
+    def resetTipInput(self):
+        self.tip_input.setText("")
+
+    def showTime(self):
+        self.curr_time = self.curr_time.addSecs(1)
+        timeDisplay=self.curr_time.toString('hh:mm:ss')
+        self.time.setText(timeDisplay)
 
 def main():
 

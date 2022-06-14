@@ -37,6 +37,9 @@ class Game(object):
     
     def wrong_tip_amount(self) -> int:
         return len(self.wrong_tips())
+
+    def correct_tip_amount(self) -> int:
+        return len(self.correct_tips())
     
     def isFinished(self) -> bool:
         return self.isWon() or self.isLost()

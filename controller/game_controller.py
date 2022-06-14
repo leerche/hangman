@@ -30,5 +30,14 @@ class GameController:
     def tip_amount(self) -> str:
         return str(self.game.tip_amount())
 
+    def correct_tip_amount(self) -> str:
+        return str(self.game.correct_tip_amount())
+
     def get_names(self) -> list:
         return ["Lea", "Robert", "Christopher", "Jonas"]
+
+    def isWon(self) -> bool:
+        return self.game.isWon()
+
+    def isLost(self) -> bool:
+        return self.game.isLost()

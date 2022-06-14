@@ -29,6 +29,14 @@ class TestGameMethods(unittest.TestCase):
         self.game.tip("L")
         self.assertEqual(1, self.game.tip_amount())
 
+    def test_correct_tip_amount(self):
+        self.assertEqual(0, self.game.correct_tip_amount())
+        self.game.tip("I")
+        self.assertEqual(0, self.game.correct_tip_amount())
+        self.game.tip("H")
+        self.assertEqual(1, self.game.correct_tip_amount())
+
+
     def test_word_status(self):
         self.assertListEqual(self.game.word_status(), [False, False, False, False, False])
         self.game.tip("l")
