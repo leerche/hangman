@@ -5,7 +5,7 @@ from models.word import Word
 from models.player import Player
 
 
-class Game:
+class Game(object):
     def __init__(self, player: Player, word: Word, config: Config):
         if not word.solvable(config.charset):
             raise ValueError(
@@ -24,9 +24,9 @@ class Game:
                 if len(lines) > 0:
                     headerColumns = list(lines[0].replace("\n", "").split(","))
         else
-            with open('some.csv', 'a', newline='') as f:
-                writer = csv.DictWriter(f, fieldnames=fields)
-                if not sniffer.has_header(f.read(2048)):
+         with open('some.csv', 'a', newline='') as f:
+              writer = csv.DictWriter(f, fieldnames=fields)
+               if not sniffer.has_header(f.read(2048)):
                     writer.writeheader()
                 writer.writerow(playerClassPropertyValues)
 
@@ -39,8 +39,6 @@ class Game:
                 # if(count > 0):
                 #     header = f.readlines()
                 #     print(header)
-
-       
 
     def unique_tips(self):
         return set(self.tips)
