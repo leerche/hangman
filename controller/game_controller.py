@@ -1,5 +1,6 @@
 
 import string
+from data.decode import WordDecode
 from factories.game_factory import GameFactory
 from models.config import Config
 from models.player import Player
@@ -10,7 +11,9 @@ class GameController:
         pass
 
     def start(self, name: str, mode: str, minutes: int) -> None:
-        game_factory = GameFactory(Player(name), Word("test"), Config(string.ascii_lowercase, 6))
+        word_decode = WordDecode()
+        word_decode.read()
+        game_factory = GameFactory(Player(name), WordDecode().getWord(), Config(string.ascii_lowercase, 6))
         self.game = game_factory.make_game()
 
     def tip(self, tip: str) -> None:

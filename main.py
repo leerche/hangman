@@ -4,6 +4,7 @@ from PyQt6 import *
 from PyQt6.QtCore import Qt, QTimer, QTime
 
 from controller.game_controller import GameController
+from data.encode import WordEncode
 
 class StartGameForm(QDialog):
 
@@ -121,7 +122,6 @@ class MainWindow(QMainWindow):
     
     def startGame(self):
         self.controller.start(self.w.name_input.text(), self.w.mode_input.currentData(), self.w.time_limit.value())
-        self.start_game_button.deleteLater()
         self.timer.startTimer(1000)
         self.updateWordStatus()
         self.updateCorrectTipAmount()
@@ -165,6 +165,9 @@ class MainWindow(QMainWindow):
         self.time.setText(timeDisplay)
 
 def main():
+
+    word_encode = WordEncode()
+    word_encode.write()
 
     app = QApplication(sys.argv)
     ex = MainWindow()
