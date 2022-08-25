@@ -5,10 +5,13 @@ from models.player import Player
 from models.word import Word
 from models.config import Config
 
-game_factory = GameFactory(Player("Lea"), Word("Hallo"), Config(string.ascii_lowercase, 7))
+game_factory = GameFactory(Player("Lea"), Word(
+    "Hallo"), Config(string.ascii_lowercase, 7))
 
 game = game_factory.make_game()
 game = Game(Player("Lea"), Word("Hallo"), Config(string.ascii_lowercase, 7))
+game.savePlayerNameToCSV(game_factory.player)
+#game.savePlayerNameToCSV(Player("lol"))
 game.tip("a")
 game.tip("b")
 game.tip("y")

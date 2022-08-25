@@ -1,0 +1,20 @@
+{
+  "todo": [],
+  "in-progress": [
+    {
+      "assignedTo": {
+        "name": "Robert Baluta"
+      },
+      "creation_time": "2022-06-08T10:24:30.170Z",
+      "description": {
+        "content": "- Check if file exists.\n\t- If not exists, create file.\n    - Check if has header\n    \t- if has header, compare header with player class attributes\n        \t- append player data\n        - if has header, only check if there was an addition, and add the new field\n        - if not has header, add all player class attributes\n        \t- append player data",
+        "mime": "text/markdown"
+      },
+      "id": "1",
+      "references": [],
+      "title": "save player class to dynamic csv file"
+    }
+  ],
+  "testing": [],
+  "done": []
+}
