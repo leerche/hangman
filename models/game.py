@@ -37,13 +37,26 @@ class Game(object):
     
     def wrong_tip_amount(self) -> int:
         return len(self.wrong_tips())
+
+    def correct_tip_amount(self) -> int:
+        return len(self.correct_tips())
     
     def isFinished(self) -> bool:
         return self.isWon() or self.isLost()
 
+    def isValidTip(self, char: str) -> bool:
+        char = char.lower()
+        if not char in self.config.charset:
+            return False
+        if not len(char):
+            return False
+        return True
+
     def tip(self, char: str) -> None:
         if self.isFinished():
             raise ValueError("The game is already finished")
+        if not len(char):
+            raise ValueError("No tip provided")
         char = char.lower()
         if not char in self.config.charset:
             raise ValueError("Character is not in charset")
