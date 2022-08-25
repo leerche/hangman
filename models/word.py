@@ -8,6 +8,9 @@ class Word:
     def __next__(self):
         return next(self.word)
 
+    def __str__(self):
+        return self.word
+
     def solved(self, tips: set):
         return set(self.word) == tips
 
