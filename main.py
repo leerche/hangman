@@ -11,6 +11,8 @@ class StartGameForm(QDialog):
     def __init__(self, controller: GameController):
         super().__init__()
         self.controller = controller
+        self.setWindowTitle('Start Game')
+
         self.completer = QCompleter(self.controller.get_names())
         self.createFormGroupBox()
         
@@ -54,6 +56,29 @@ class StartGameForm(QDialog):
             self.time_limit.hide()
             self.time_limit_label.hide()
 
+class GameEndedForm(QDialog):
+
+    def __init__(self, controller: GameController):
+        super().__init__()
+        self.controller = controller
+
+        self.setWindowTitle('Game Ended')
+        
+        buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
+        buttonBox.accepted.connect(self.close)
+
+        if(self.controller.isWon()):
+            game_status = QLabel("Gewonnen!")
+        else:
+            game_status = QLabel("Verloren!")
+        
+        mainLayout = QVBoxLayout()
+        mainLayout.addWidget(game_status)
+        mainLayout.addWidget(buttonBox)
+        self.setLayout(mainLayout)
+
+    def close(self):
+        sys.exit()
 
 class MainWindow(QMainWindow):
 
@@ -74,9 +99,6 @@ class MainWindow(QMainWindow):
         self.correct_tip_amount = QLabel()
 
         self.timer = QTimer()
-        self.curr_time = QTime(00,00,00)
-        self.timer.timeout.connect(self.showTime)
-        self.timer.start(1000) # doesn't work in start game?
 
         self.time = QLabel("Zeit: ")
 
@@ -112,7 +134,7 @@ class MainWindow(QMainWindow):
         self.statusBar()
 
         self.setGeometry(500, 500, 450, 350)
-        self.setWindowTitle('Event sender')
+        self.setWindowTitle('Hangman by Robert, Jonas, Lea & Christopher')
         self.show()
 
     def buttonClicked(self):
@@ -122,11 +144,26 @@ class MainWindow(QMainWindow):
     
     def startGame(self):
         self.controller.start(self.w.name_input.text(), self.w.mode_input.currentData(), self.w.time_limit.value())
-        self.timer.startTimer(1000)
+
+        if(self.w.mode_input.currentData() == "casual"):
+            self.curr_time = QTime(00,00,00)
+            self.timer.timeout.connect(self.showTime)
+            self.timer.start(1000) # doesn't work in start game?
+            #self.time.setText(self.curr_time.toString('hh:mm:ss'))
+        elif(self.w.mode_input.currentData() == "time"):
+            time = self.w.time_limit.value()
+            self.curr_time = QTime(00,time,00)
+            self.timer.timeout.connect(self.showCountdown)
+            self.timer.start(1000) # doesn't work in start game?
+            #self.time.setText(self.curr_time.toString('hh:mm:ss'))
+
+
         self.updateWordStatus()
         self.updateCorrectTipAmount()
         self.updateTipAmount()
         self.centralWidget().show()
+        self.start_game_button.hide()
+
 
     def tip(self):
         self.controller.tip(self.tip_input.text())
@@ -152,9 +189,11 @@ class MainWindow(QMainWindow):
 
     def checkGameStatus(self):
         if self.controller.isWon():
-            print("Gewonnen")
+            self.w = GameEndedForm(self.controller)
+            self.w.open()
         elif self.controller.isLost():
-            print("Verloren")
+            self.w = GameEndedForm(self.controller)
+            self.w.open()
     
     def resetTipInput(self):
         self.tip_input.setText("")
@@ -162,6 +201,15 @@ class MainWindow(QMainWindow):
     def showTime(self):
         self.curr_time = self.curr_time.addSecs(1)
         timeDisplay=self.curr_time.toString('hh:mm:ss')
+        self.time.setText(timeDisplay)
+
+    def showCountdown(self):
+        self.curr_time = self.curr_time.addSecs(-1)
+        if(self.curr_time.second() == 0):
+            self.w = GameEndedForm(self.controller)
+            self.w.open()
+        timeDisplay=self.curr_time.toString('hh:mm:ss')
+
         self.time.setText(timeDisplay)
 
 def main():
