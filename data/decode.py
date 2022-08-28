@@ -1,12 +1,9 @@
 from base64 import decode
 import codecs
 import csv
-from encodings import utf_8
 from random import randint
 from models.word import Word
 Decodiert = []
-i= 0;
-
 class WordDecode ():
     
     def __init__(self) -> None:
