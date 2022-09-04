@@ -11,6 +11,8 @@ class GameController:
     def __init__(self) -> None:
         pass
 
+    # currently we allow a fixed amount of allowed wrong tips.
+    # future: catch if you can actually fail with the wrong tip amount
     def start(self, name: str, mode: str, minutes: int) -> None:
         word_decode = WordDecode()
         word_decode.read()
