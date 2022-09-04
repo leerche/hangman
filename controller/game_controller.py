@@ -1,10 +1,13 @@
 
+import csv
+from pathlib import Path
 import string
 from data.decode import WordDecode
 from factories.game_factory import GameFactory
 from models.config import Config
 from models.player import Player
 from models.time_config import TimeConfig
+from models.time_game import TimeGame
 from models.word import Word
 
 class GameController:
@@ -16,9 +19,22 @@ class GameController:
     def start(self, name: str, mode: str, minutes: int) -> None:
         word_decode = WordDecode()
         word_decode.read()
-        game_factory = GameFactory(Player(name), WordDecode().getWord(), string.ascii_lowercase + 'üöä', 6, mode, minutes)
+        #game_factory = GameFactory(Player(name), WordDecode().getWord(), string.ascii_lowercase + 'üöä', 6, mode, minutes)
+        game_factory = GameFactory(Player(name), Word("t"), string.ascii_lowercase + 'üöä', 6, mode, minutes)
         
         self.game = game_factory.make_game()
+        self.savePlayerNameToCSV(name);
+        
+    
+    def savePlayerNameToCSV(self, player: str):
+        with open ('names.csv', 'r') as name_fread:
+            names_reader = csv.reader(name_fread)
+            for row in names_reader:
+                if row == [player]:
+                    return
+        with open('names.csv', 'a') as name_file:
+            name_writer =  csv.writer(name_file, delimiter=',', quotechar='"')
+            name_writer.writerow([player])
 
     def tip(self, tip: str) -> None:
         if not self.game.isValidTip(tip):
@@ -41,10 +57,24 @@ class GameController:
         return str(self.game.correct_tip_amount())
 
     def get_names(self) -> list:
-        return ["Lea", "Robert", "Christopher", "Jonas"]
+        names = []
+        file = Path('names.csv')
+        mode = 'r'
+        if not file.is_file():
+             mode ='w+'
+            
+        with open ('names.csv', mode) as name_fread:
+            names_reader = csv.reader(name_fread)
+            for row in names_reader:
+                names += row
+            name_fread.close()
+        return names
 
     def isWon(self) -> bool:
         return self.game.isWon()
 
     def isLost(self) -> bool:
         return self.game.isLost()
+
+    def isTimeGame(self) -> bool:
+        return isinstance(self.game, TimeGame)

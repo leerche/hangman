@@ -17,5 +17,5 @@ class GameFactory:
 
     def make_game(self) -> Game:
         if self.mode == "time":
-            return TimeGame(self.player, self.word, TimeConfig(self.charset, self.word, self.minutes * 60))
+            return TimeGame(self.player, self.word, TimeConfig(self.charset, self.wrong_tip_amount, self.minutes * 60))
         return Game(self.player, self.word, Config(self.charset, self.wrong_tip_amount))
