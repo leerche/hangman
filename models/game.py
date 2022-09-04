@@ -84,3 +84,7 @@ class Game(object):
         # verarbeite den zu erratenden Buchstaben:
         self.tips.append(char)
 
+    def getPlayerName(self):
+        return self.player.name
+    
+
