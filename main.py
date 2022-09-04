@@ -41,6 +41,8 @@ class StartGameForm(QDialog):
         self.form_layout.addRow(QLabel("Modus:"), self.mode_input)
 
         self.time_limit = QSpinBox()
+        self.time_limit.setMaximum(59)
+        self.time_limit.setMinimum(1)
         self.time_limit.hide()
         self.time_limit_label = QLabel("Zeitlimit (Minuten):")
         self.time_limit_label.hide()
