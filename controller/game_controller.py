@@ -12,8 +12,8 @@ class GameController:
     def __init__(self) -> None:
         pass
 
-    # currently we allow a fixed amount of allowed wrong tips.
-    # future: catch if you can actually fail with the wrong tip amount
+    # Spielstart:
+    # derzeit erlauben wir nur eine feste Anzahl an falsch geratenen Buchstaben
     def start(self, name: str, mode: str, minutes: int) -> None:
         word_decode = WordDecode()
         word_decode.read()
@@ -22,34 +22,47 @@ class GameController:
         
         self.game = game_factory.make_game()
 
+    # Einen Buchstaben erraten:
+    # Wenn er richtig ist, wird der Buchstabe von der Methode zurück gegeben:
     def tip(self, tip: str) -> None:
         if not self.game.isValidTip(tip):
             return
         if self.game.isFinished():
             return
         self.game.tip(tip)
-
+    
+    # Das aktuelle Lösungswort ausgeben:
+    # Erratene Buchstaben werden angezeigt und noch nicht erratene Buchstaben
+    # werden durch einen Unterstrich repräsentiert.
     def word_status(self) -> str: 
-        # todo word status class with to string method
+        # TODO: word_status als Klasse mit einer toString-Methode implementieren
         return ''.join([char if char else ' _ ' for char in self.game.word_status()])
 
+    # Gibt alle Zeichen aus, die bisher geraten wurden:
+    # (in alphabetischer Reihenfolge)
     def tips(self) -> str:
         return ' '.join(sorted([char for char in self.game.unique_tips()]))
 
+    # Gibt an, wie viele gültige (validierte) Tips bereits gemacht wurden:
     def tip_amount(self) -> str:
         return str(self.game.tip_amount())
 
+    # Gibt an, wie viele korrekte Tips bereits gemacht wurden:
     def correct_tip_amount(self) -> str:
         return str(self.game.correct_tip_amount())
 
+    # Autovervollständigung für die Eingabe der Spielernamen:
     def get_names(self) -> list:
         return ["Lea", "Robert", "Christopher", "Jonas"]
 
+    # Routine bei gewonnenem Spiel:
     def isWon(self) -> bool:
         return self.game.isWon()
-
+        
+    # Routine bei verlorenem Spiel:
     def isLost(self) -> bool:
         return self.game.isLost()
 
+    # Gibt an, ob es sich um ein Spiel auf Zeit handelt:
     def isTimeGame(self) -> bool:
         return isinstance(self.game, TimeGame)
