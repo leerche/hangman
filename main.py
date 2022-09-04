@@ -1,6 +1,7 @@
 import sys
 from PyQt6.QtWidgets import *
 from PyQt6 import *
+from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt, QTimer, QTime
 
 from controller.game_controller import GameController
@@ -11,6 +12,7 @@ class StartGameForm(QDialog):
     def __init__(self, controller: GameController):
         super().__init__()
         self.controller = controller
+        self.setWindowIcon(QtGui.QIcon('assets/hangman.png'))
         self.setWindowTitle('Start Game')
 
         self.completer = QCompleter(self.controller.get_names())
@@ -61,7 +63,7 @@ class GameEndedForm(QDialog):
     def __init__(self, controller: GameController):
         super().__init__()
         self.controller = controller
-
+        self.setWindowIcon(QtGui.QIcon('assets/hangman.png'))
         self.setWindowTitle('Game Ended')
         
         buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
@@ -134,6 +136,7 @@ class MainWindow(QMainWindow):
         self.statusBar()
 
         self.setGeometry(500, 500, 450, 350)
+        self.setWindowIcon(QtGui.QIcon('assets/hangman.png'))
         self.setWindowTitle('Hangman by Robert, Jonas, Lea & Christopher')
         self.show()
 
