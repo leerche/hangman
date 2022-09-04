@@ -1,8 +1,9 @@
+from ast import Expression
 import sys
 from PyQt6.QtWidgets import *
 from PyQt6 import *
-from PyQt6.QtGui import QIcon
-from PyQt6.QtCore import Qt, QTimer, QTime
+from PyQt6.QtGui import QIcon, QRegularExpressionValidator
+from PyQt6.QtCore import Qt, QTimer, QTime, QRegularExpression
 
 from controller.game_controller import GameController
 from data.encode import WordEncode
@@ -19,18 +20,29 @@ class StartGameForm(QDialog):
         self.createFormGroupBox()
         
         buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
-        buttonBox.accepted.connect(self.accept)
+        buttonBox.accepted.connect(self.validateinput)
         buttonBox.rejected.connect(self.reject)
 
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(self.formGroupBox)
         mainLayout.addWidget(buttonBox)
         self.setLayout(mainLayout)
+
+    def validateinput(self):
+        if len(self.name_input.text()):
+            self.accept()
+        else:
+            self.name_input.setPlaceholderText("Name Required")
         
     def createFormGroupBox(self):
         self.formGroupBox = QGroupBox()
         self.form_layout = QFormLayout()
-        self.name_input = QLineEdit()
+        rx = QRegularExpression("[A-z0-9]{20}")
+
+        self.name_input = QLineEdit(self)
+        validator = QRegularExpressionValidator(rx)
+        self.name_input.setValidator(validator)
+
         self.name_input.setCompleter(self.completer)
         self.form_layout.addRow(QLabel("Name:"), self.name_input)
 
