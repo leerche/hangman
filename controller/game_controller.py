@@ -1,5 +1,6 @@
 
 import csv
+from pathlib import Path
 import string
 from data.decode import WordDecode
 from factories.game_factory import GameFactory
@@ -17,22 +18,19 @@ class GameController:
     def start(self, name: str, mode: str, minutes: int) -> None:
         word_decode = WordDecode()
         word_decode.read()
-        if(mode == "time"):
-            game_factory = GameFactory(Player(name), WordDecode().getWord(), TimeConfig(string.ascii_lowercase + 'üöä', 6, minutes * 60))
-        else:
-            game_factory = GameFactory(Player(name), WordDecode().getWord(), Config(string.ascii_lowercase + 'üöä', 6))
-
+        game_factory = GameFactory(Player(name), WordDecode().getWord(), string.ascii_lowercase + 'üöä', 6, mode, minutes)
+        
         self.game = game_factory.make_game()
         self.savePlayerNameToCSV(name);
         
     
     def savePlayerNameToCSV(self, player: str):
-        with open ('names.csv') as name_fread:
+        with open ('names.csv', 'r') as name_fread:
             names_reader = csv.reader(name_fread)
             for row in names_reader:
                 if row == [player]:
                     return
-        with open('names.csv', mode='a') as name_file:
+        with open('names.csv', 'a') as name_file:
             name_writer =  csv.writer(name_file, delimiter=',', quotechar='"')
             name_writer.writerow([player])
 
@@ -58,10 +56,16 @@ class GameController:
 
     def get_names(self) -> list:
         names = []
-        with open ('names.csv') as name_fread:
+        file = Path('names.csv')
+        mode = 'r'
+        if not file.is_file():
+             mode ='w+'
+            
+        with open ('names.csv', mode) as name_fread:
             names_reader = csv.reader(name_fread)
             for row in names_reader:
                 names += row
+            name_fread.close()
         return names
 
     def isWon(self) -> bool:
