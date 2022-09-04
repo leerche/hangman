@@ -117,6 +117,8 @@ class MainWindow(QMainWindow):
         self.tip_input = QLineEdit()
         self.tip_input.returnPressed.connect(self.tip)
 
+        self.name = QLabel()
+       
         self.used_characters = QLabel("Benutzte Zeichen: ")
         self.word_status = QLabel()
 
@@ -130,6 +132,8 @@ class MainWindow(QMainWindow):
         game_layout = QGridLayout()
 
         game_layout.addWidget(self.time, 5, 1)
+
+        game_layout.addWidget(self.name, 0, 1, 1, 3)
 
         game_layout.addWidget(self.used_characters, 1, 1)
 
@@ -185,6 +189,7 @@ class MainWindow(QMainWindow):
 
 
         self.updateWordStatus()
+        self.name.setText("Spieler: " + self.controller.getName()) 
         self.updateCorrectTipAmount()
         self.updateTipAmount()
         self.centralWidget().show()
