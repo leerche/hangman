@@ -17,7 +17,7 @@ class Game(object):
     def unique_tips(self):
         return set(self.tips)
     
-    # Rückgabe einer unsortierten Liste mit den Buchstben, die bereits erraten wurden:
+    # Rückgabe einer unsortierten Liste mit den Buchstaben, die bereits erraten wurden:
     def correct_tips(self) -> set:
         return set([x for x in self.unique_tips() if self.word.char_is_correct(x)])
 
@@ -25,7 +25,7 @@ class Game(object):
     def wrong_tips(self) -> set:
         return set([x for x in self.unique_tips() if not self.word.char_is_correct(x)])
 
-    # Rückgabe einer unsortierten Liste mit den Buchstben, die noch nicht erraten wurden:
+    # Rückgabe einer unsortierten Liste mit den Buchstaben, die noch nicht erraten wurden:
     def missing_tips(self) -> set:
         return set([x for x in self.word if x not in self.tips])
         
