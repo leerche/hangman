@@ -27,7 +27,7 @@ class Game(object):
         return list(map(lambda x: x if x in self.correct_tips() else False, self.word))
     
     def tip_amount(self) -> int:
-        return len(self.tips)
+        return len(self.unique_tips())
 
     def isWon(self) -> bool:
         return self.word.solved(self.unique_tips())
