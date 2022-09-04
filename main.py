@@ -209,7 +209,7 @@ class MainWindow(QMainWindow):
             self.w.open()
         elif self.controller.isLost():
             self.timer.stop()
-            self.w = GameEndedForm(self.controller)
+            self.w = GameEndedForm(self.controller, self.time)
             self.w.open()
     
     def resetTipInput(self):
