@@ -1,4 +1,6 @@
 
+import csv
+from pathlib import Path
 import string
 from data.decode import WordDecode
 from factories.game_factory import GameFactory
@@ -21,6 +23,18 @@ class GameController:
         game_factory = GameFactory(Player(name), Word("t"), string.ascii_lowercase + 'üöä', 6, mode, minutes)
         
         self.game = game_factory.make_game()
+        self.savePlayerNameToCSV(name);
+        
+    
+    def savePlayerNameToCSV(self, player: str):
+        with open ('names.csv', 'r') as name_fread:
+            names_reader = csv.reader(name_fread)
+            for row in names_reader:
+                if row == [player]:
+                    return
+        with open('names.csv', 'a') as name_file:
+            name_writer =  csv.writer(name_file, delimiter=',', quotechar='"')
+            name_writer.writerow([player])
 
     # Einen Buchstaben erraten:
     # Wenn er richtig ist, wird der Buchstabe von der Methode zurück gegeben:
@@ -53,7 +67,18 @@ class GameController:
 
     # Autovervollständigung für die Eingabe der Spielernamen:
     def get_names(self) -> list:
-        return ["Lea", "Robert", "Christopher", "Jonas"]
+        names = []
+        file = Path('names.csv')
+        mode = 'r'
+        if not file.is_file():
+             mode ='w+'
+            
+        with open ('names.csv', mode) as name_fread:
+            names_reader = csv.reader(name_fread)
+            for row in names_reader:
+                names += row
+            name_fread.close()
+        return names
 
     # Routine bei gewonnenem Spiel:
     def isWon(self) -> bool:
