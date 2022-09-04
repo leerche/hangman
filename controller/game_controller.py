@@ -48,7 +48,7 @@ class GameController:
         return ''.join([char if char else ' _ ' for char in self.game.word_status()])
 
     def tips(self) -> str:
-        return ''.join([char for char in self.game.unique_tips()])
+        return ' '.join(sorted([char for char in self.game.unique_tips()]))
 
     def tip_amount(self) -> str:
         return str(self.game.tip_amount())
