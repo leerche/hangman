@@ -12,6 +12,7 @@ class StartGameForm(QDialog):
 
     def __init__(self, controller: GameController):
         super().__init__()
+        self.name
         self.controller = controller
         self.setWindowIcon(QIcon('assets/hangman.png'))
         self.setWindowTitle('Start Game')
@@ -118,7 +119,9 @@ class MainWindow(QMainWindow):
         self.tip_input = QLineEdit()
         self.tip_input.returnPressed.connect(self.tip)
 
-        self.used_characters = QLabel("Benutzte Zeichen: ")
+        self.show_name = QLabel("Spieler: " + self.name)
+       
+        self.used_characters = QLabel("Benutzte Zeichen: " + self.name)
         self.word_status = QLabel()
 
         self.tip_amount = QLabel()
@@ -131,6 +134,8 @@ class MainWindow(QMainWindow):
         game_layout = QGridLayout()
 
         game_layout.addWidget(self.time, 5, 1)
+
+        game_layout.addWidget(self.show_name_label, 6, 1)
 
         game_layout.addWidget(self.used_characters, 1, 1)
 
@@ -186,6 +191,7 @@ class MainWindow(QMainWindow):
 
 
         self.updateWordStatus()
+        self.name.setText(self.controller.getName()) 
         self.updateCorrectTipAmount()
         self.updateTipAmount()
         self.centralWidget().show()

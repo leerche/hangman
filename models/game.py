@@ -62,3 +62,7 @@ class Game(object):
             raise ValueError("Character is not in charset")
         self.tips.append(char)
 
+    def getPlayerName(self):
+        return self.Player
+    
+

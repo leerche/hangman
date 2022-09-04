@@ -52,6 +52,10 @@ class GameController:
         # TODO: word_status als Klasse mit einer toString-Methode implementieren
         return ''.join([char if char else ' _ ' for char in self.game.word_status()])
 
+    # Den Spielernamen ausgeben
+    def getName(self) -> str:
+        return self.game.getPlayerName()
+
     # Gibt alle Zeichen aus, die bisher geraten wurden:
     # (in alphabetischer Reihenfolge)
     def tips(self) -> str:
