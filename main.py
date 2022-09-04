@@ -148,14 +148,14 @@ class MainWindow(QMainWindow):
         if(self.w.mode_input.currentData() == "casual"):
             self.curr_time = QTime(00,00,00)
             self.timer.timeout.connect(self.showTime)
-            self.timer.start(1000) # doesn't work in start game?
-            #self.time.setText(self.curr_time.toString('hh:mm:ss'))
+            self.timer.start(1000)
+            self.time.setText(self.curr_time.toString('hh:mm:ss'))
         elif(self.w.mode_input.currentData() == "time"):
             time = self.w.time_limit.value()
             self.curr_time = QTime(00,time,00)
             self.timer.timeout.connect(self.showCountdown)
-            self.timer.start(1000) # doesn't work in start game?
-            #self.time.setText(self.curr_time.toString('hh:mm:ss'))
+            self.timer.start(1000)
+            self.time.setText(self.curr_time.toString('hh:mm:ss'))
 
 
         self.updateWordStatus()
