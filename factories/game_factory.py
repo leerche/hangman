@@ -7,12 +7,15 @@ from models.time_config import TimeConfig
 
 
 class GameFactory:
-    def __init__(self, player: Player, word: Word, config: Config) -> None:
+    def __init__(self, player: Player, word: Word, charset: str, wrong_tip_amount: int, mode: str, minutes: int) -> None:
         self.player = player
         self.word = word
-        self.config = config
+        self.wrong_tip_amount = wrong_tip_amount
+        self.mode = mode
+        self.charset = charset
+        self.minutes = minutes
 
     def make_game(self) -> Game:
-        if isinstance(self.config, TimeConfig):
-            return TimeGame(self.player, self.word, self.config)
-        return Game(self.player, self.word, self.config)
+        if self.mode == "time":
+            return TimeGame(self.player, self.word, TimeConfig(self.charset, self.wrong_tip_amount, self.minutes * 60))
+        return Game(self.player, self.word, Config(self.charset, self.wrong_tip_amount))

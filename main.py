@@ -1,6 +1,7 @@
 import sys
 from PyQt6.QtWidgets import *
 from PyQt6 import *
+from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt, QTimer, QTime
 
 from controller.game_controller import GameController
@@ -11,6 +12,7 @@ class StartGameForm(QDialog):
     def __init__(self, controller: GameController):
         super().__init__()
         self.controller = controller
+        self.setWindowIcon(QIcon('assets/hangman.png'))
         self.setWindowTitle('Start Game')
 
         self.completer = QCompleter(self.controller.get_names())
@@ -26,7 +28,7 @@ class StartGameForm(QDialog):
         self.setLayout(mainLayout)
         
     def createFormGroupBox(self):
-        self.formGroupBox = QGroupBox("Form layout")
+        self.formGroupBox = QGroupBox()
         self.form_layout = QFormLayout()
         self.name_input = QLineEdit()
         self.name_input.setCompleter(self.completer)
@@ -60,11 +62,19 @@ class StartGameForm(QDialog):
 
 class GameEndedForm(QDialog):
 
-    def __init__(self, controller: GameController):
+    def __init__(self, controller: GameController, time: QLabel):
         super().__init__()
         self.controller = controller
 
+        self.time = time
+        self.setWindowIcon(QIcon('assets/hangman.png'))
+
         self.setWindowTitle('Game Ended')
+
+        if(self.controller.isTimeGame()):
+            self.timeLabel = QLabel("Verbliebende Zeit: ")
+        else:
+            self.timeLabel = QLabel("Benötigte Zeit: ")
         
         buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
         buttonBox.accepted.connect(self.close)
@@ -74,9 +84,11 @@ class GameEndedForm(QDialog):
         else:
             game_status = QLabel("Verloren!")
         
-        mainLayout = QVBoxLayout()
-        mainLayout.addWidget(game_status)
-        mainLayout.addWidget(buttonBox)
+        mainLayout = QGridLayout()
+        mainLayout.addWidget(self.timeLabel, 2, 1)
+        mainLayout.addWidget(self.time, 2, 2)
+        mainLayout.addWidget(game_status, 1, 1)
+        mainLayout.addWidget(buttonBox, 3, 2)
         self.setLayout(mainLayout)
 
     def close(self):
@@ -102,7 +114,7 @@ class MainWindow(QMainWindow):
 
         self.timer = QTimer()
 
-        self.time = QLabel("Zeit: ")
+        self.time = QLabel()
 
         game_layout = QGridLayout()
 
@@ -136,6 +148,7 @@ class MainWindow(QMainWindow):
         self.statusBar()
 
         self.setGeometry(500, 500, 450, 350)
+        self.setWindowIcon(QIcon('assets/hangman.png'))
         self.setWindowTitle('Hangman by Robert, Jonas, Lea & Christopher')
         self.show()
 
@@ -191,9 +204,11 @@ class MainWindow(QMainWindow):
 
     def checkGameStatus(self):
         if self.controller.isWon():
-            self.w = GameEndedForm(self.controller)
+            self.timer.stop()
+            self.w = GameEndedForm(self.controller, self.time)
             self.w.open()
         elif self.controller.isLost():
+            self.timer.stop()
             self.w = GameEndedForm(self.controller)
             self.w.open()
     
