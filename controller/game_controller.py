@@ -16,11 +16,8 @@ class GameController:
     def start(self, name: str, mode: str, minutes: int) -> None:
         word_decode = WordDecode()
         word_decode.read()
-        if(mode == "time"):
-            game_factory = GameFactory(Player(name), WordDecode().getWord(), TimeConfig(string.ascii_lowercase + 'üöä', 6, minutes * 60))
-        else:
-            game_factory = GameFactory(Player(name), WordDecode().getWord(), Config(string.ascii_lowercase + 'üöä', 6))
-
+        game_factory = GameFactory(Player(name), WordDecode().getWord(), string.ascii_lowercase + 'üöä', 6, mode, minutes)
+        
         self.game = game_factory.make_game()
 
     def tip(self, tip: str) -> None:
