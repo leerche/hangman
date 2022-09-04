@@ -14,7 +14,32 @@ class Game(object):
         self.player = player
         self.tips = list()
         self.word = word
-        
+
+    def savePlayerNameToCSV(self, player: Player):
+        playerClassPropertyValues = vars(player)
+        fields = playerClassPropertyValues.keys()
+        if(os.path.exists("some.csv")):
+            with open("some.csv", 'r') as f:
+                lines = f.readlines()
+                if len(lines) > 0:
+                    headerColumns = list(lines[0].replace("\n", "").split(","))
+        else
+         with open('some.csv', 'a', newline='') as f:
+              writer = csv.DictWriter(f, fieldnames=fields)
+               if not sniffer.has_header(f.read(2048)):
+                    writer.writeheader()
+                writer.writerow(playerClassPropertyValues)
+
+                # count = 0
+                # while 1:
+                #     buffer = f.read(65536)
+                #     if not buffer: break
+                #     count += buffer.count('\n')
+                # f.seek(0)
+                # if(count > 0):
+                #     header = f.readlines()
+                #     print(header)
+
     def unique_tips(self):
         return set(self.tips)
 
@@ -42,26 +67,12 @@ class Game(object):
     def wrong_tip_amount(self) -> int:
         return len(self.wrong_tips())
 
-    def correct_tip_amount(self) -> int:
-        return len(self.correct_tips())
-
-    
     def isFinished(self) -> bool:
         return self.isWon() or self.isLost()
-
-    def isValidTip(self, char: str) -> bool:
-        char = char.lower()
-        if not char in self.config.charset:
-            return False
-        if not len(char):
-            return False
-        return True
 
     def tip(self, char: str) -> None:
         if self.isFinished():
             raise ValueError("The game is already finished")
-        if not len(char):
-            raise ValueError("No tip provided")
         char = char.lower()
         if not char in self.config.charset:
             raise ValueError("Character is not in charset")
