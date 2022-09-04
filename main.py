@@ -242,14 +242,6 @@ class MainWindow(QMainWindow):
 
         self.time.setText(timeDisplay)
 
-    # def validate(self):
-    #     rx = QRegularExpression('[A-z0-9]+')
-    #     self.nameinput = 
-
-    #     reg_validator = QRegularExpressionValidator(reg)
-    #     self.setValidator(reg_validator) 
-    #     return editor   
-
 def main():
 
     word_encode = WordEncode()
