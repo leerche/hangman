@@ -33,7 +33,7 @@ class WordEncode ():
             "Quarantäne"
             ]
         Codiert = []
-        i= 0;
+        i= 0
         with open('data/words.csv', 'w', encoding='utf_8') as csv_schreib_datei:
             writer = csv.writer(csv_schreib_datei, delimiter=",")        
             for wort in Woerter:
