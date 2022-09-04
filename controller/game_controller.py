@@ -1,4 +1,5 @@
 
+import csv
 import string
 from data.decode import WordDecode
 from factories.game_factory import GameFactory
@@ -19,6 +20,18 @@ class GameController:
         game_factory = GameFactory(Player(name), WordDecode().getWord(), string.ascii_lowercase + 'üöä', 6, mode, minutes)
         
         self.game = game_factory.make_game()
+        self.savePlayerNameToCSV(name);
+        
+    
+    def savePlayerNameToCSV(self, player: str):
+        with open ('names.csv') as name_fread:
+            names_reader = csv.reader(name_fread)
+            for row in names_reader:
+                if row == [player]:
+                    return
+        with open('names.csv', mode='a') as name_file:
+            name_writer =  csv.writer(name_file, delimiter=',', quotechar='"')
+            name_writer.writerow([player])
 
     def tip(self, tip: str) -> None:
         if not self.game.isValidTip(tip):
@@ -41,7 +54,12 @@ class GameController:
         return str(self.game.correct_tip_amount())
 
     def get_names(self) -> list:
-        return ["Lea", "Robert", "Christopher", "Jonas"]
+        names = []
+        with open ('names.csv') as name_fread:
+            names_reader = csv.reader(name_fread)
+            for row in names_reader:
+                names += row
+        return names
 
     def isWon(self) -> bool:
         return self.game.isWon()
