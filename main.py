@@ -21,7 +21,7 @@ class StartGameForm(QDialog):
         buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttonBox.accepted.connect(self.accept)
         buttonBox.rejected.connect(self.reject)
-        
+
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(self.formGroupBox)
         mainLayout.addWidget(buttonBox)
@@ -223,7 +223,8 @@ class MainWindow(QMainWindow):
     def showCountdown(self):
         self.curr_time = self.curr_time.addSecs(-1)
         if(self.curr_time.second() == 0):
-            self.w = GameEndedForm(self.controller)
+            self.timer.stop()
+            self.w = GameEndedForm(self.controller, self.time)
             self.w.open()
         timeDisplay=self.curr_time.toString('hh:mm:ss')
 
