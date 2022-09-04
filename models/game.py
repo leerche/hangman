@@ -63,6 +63,6 @@ class Game(object):
         self.tips.append(char)
 
     def getPlayerName(self):
-        return self.Player
+        return self.player.name
     
 
