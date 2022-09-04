@@ -4,16 +4,23 @@ from data.decode import WordDecode
 from factories.game_factory import GameFactory
 from models.config import Config
 from models.player import Player
+from models.time_config import TimeConfig
 from models.word import Word
 
 class GameController:
     def __init__(self) -> None:
         pass
 
+    # currently we allow a fixed amount of allowed wrong tips.
+    # future: catch if you can actually fail with the wrong tip amount
     def start(self, name: str, mode: str, minutes: int) -> None:
         word_decode = WordDecode()
         word_decode.read()
-        game_factory = GameFactory(Player(name), WordDecode().getWord(), Config(string.ascii_lowercase, 6))
+        if(mode == "time"):
+            game_factory = GameFactory(Player(name), WordDecode().getWord(), TimeConfig(string.ascii_lowercase + 'üöä', 6, minutes * 60))
+        else:
+            game_factory = GameFactory(Player(name), WordDecode().getWord(), Config(string.ascii_lowercase + 'üöä', 6))
+
         self.game = game_factory.make_game()
 
     def tip(self, tip: str) -> None:
