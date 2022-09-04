@@ -25,7 +25,7 @@ class GameController:
         self.game = game_factory.make_game()
         self.savePlayerNameToCSV(name);
         
-    
+    # Speichere den Spielernamen in der Datei names.csv:
     def savePlayerNameToCSV(self, player: str):
         with open ('names.csv', 'r') as name_fread:
             names_reader = csv.reader(name_fread)
