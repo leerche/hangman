@@ -4,7 +4,9 @@ from models.player import Player
 from models.time_game import TimeGame
 from models.word import Word
 from models.time_config import TimeConfig
-
+"""
+Erstellung eines neuen Spiels mittels Fabrikmethode (Pattern)
+"""
 
 class GameFactory:
     def __init__(self, player: Player, word: Word, charset: str, wrong_tip_amount: int, mode: str, minutes: int) -> None:
