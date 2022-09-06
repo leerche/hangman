@@ -17,7 +17,7 @@ class Word:
 
     # liefert true zurück, wenn das Wort vollständig gelöst wurde:
     def solved(self, tips: set):
-        return set(self.word) == tips
+        return set(self.word).issubset(tips)
 
     # liefert true zurück, wenn das Wort mit dem erlaubten Zeichensatz lösbar ist:
     def solvable(self, charset: str):
