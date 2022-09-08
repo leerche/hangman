@@ -3,9 +3,13 @@ import csv
 from pathlib import Path
 import string
 from data.decode import WordDecode
+from factories import game_factory
 from factories.game_factory import GameFactory
+from models.config import Config
 from models.player import Player
 from models.time_game import TimeGame
+from models.word import Word
+from models.hangman_graphic import HangmanGraphic
 
 class GameController:
     def __init__(self) -> None:
@@ -19,7 +23,8 @@ class GameController:
         game_factory = GameFactory(Player(name), string.ascii_lowercase + 'üöä', 6, mode, minutes)
         
         self.game = game_factory.make_game()
-        self.savePlayerNameToCSV(name);
+        self.savePlayerNameToCSV(name)
+        self.graphic = self.game.getGraphic()
         
     # Speichere den Spielernamen in der Datei names.csv:
     def savePlayerNameToCSV(self, player: str):

@@ -1,7 +1,7 @@
 from models.config import Config
 from models.word import Word
 from models.player import Player
-
+from models.hangman_graphic import HangmanGraphic
 class Game(object):
     # Konstruktor:
     def __init__(self, player: Player, word: Word, config: Config):
@@ -12,6 +12,10 @@ class Game(object):
         self.player = player
         self.tips = list()
         self.word = word
+        self.graphic = HangmanGraphic()
+    
+    def getGraphic(self):
+        return self.graphic
 
     #
     def unique_tips(self):
@@ -81,6 +85,9 @@ class Game(object):
         # befindet sich der Buchstabe im erlaubten Zeichensatz?
         if not char in self.config.charset:
             raise ValueError("Character is not in charset")
+        if not char in self.tips:
+            if not self.word.char_is_correct(char):
+                self.graphic.updateGraphic()
         # verarbeite den zu erratenden Buchstaben:
         self.tips.append(char)
 

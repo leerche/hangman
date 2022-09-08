@@ -4,6 +4,8 @@ from models.game import Game
 from models.player import Player
 from models.time_game import TimeGame
 from models.time_config import TimeConfig
+from models.hangman_graphic import HangmanGraphic
+
 """
 Erstellung eines neuen Spiels mittels Fabrikmethode (Pattern)
 """
