@@ -1,7 +1,7 @@
 from models.config import Config
 from models.word import Word
 from models.player import Player
-
+from models.hangman_graphic import HangmanGraphic
 class Game(object):
     def __init__(self, player: Player, word: Word, config: Config):
         if not word.solvable(config.charset):
@@ -10,6 +10,10 @@ class Game(object):
         self.player = player
         self.tips = list()
         self.word = word
+        self.graphic = HangmanGraphic()
+    
+    def getGraphic(self):
+        return self.graphic
 
     def unique_tips(self):
         return set(self.tips)
@@ -60,5 +64,8 @@ class Game(object):
         char = char.lower()
         if not char in self.config.charset:
             raise ValueError("Character is not in charset")
+        if not char in self.tips:
+            if not self.word.char_is_correct(char):
+                self.graphic.updateGraphic()
         self.tips.append(char)
 

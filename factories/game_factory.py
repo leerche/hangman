@@ -1,15 +1,18 @@
+from distutils.log import debug
 from models.config import Config
 from models.game import Game
 from models.player import Player
 from models.time_game import TimeGame
 from models.word import Word
 from models.time_config import TimeConfig
+from models.hangman_graphic import HangmanGraphic
 
 
 class GameFactory:
     def __init__(self, player: Player, word: Word, charset: str, wrong_tip_amount: int, mode: str, minutes: int) -> None:
         self.player = player
         self.word = word
+        print(word)
         self.wrong_tip_amount = wrong_tip_amount
         self.mode = mode
         self.charset = charset

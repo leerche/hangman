@@ -3,9 +3,9 @@ from PyQt6.QtWidgets import *
 from PyQt6 import *
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt, QTimer, QTime
-
 from controller.game_controller import GameController
 from data.encode import WordEncode
+
 
 class StartGameForm(QDialog):
 
@@ -26,6 +26,7 @@ class StartGameForm(QDialog):
         mainLayout.addWidget(self.formGroupBox)
         mainLayout.addWidget(buttonBox)
         self.setLayout(mainLayout)
+
         
     def createFormGroupBox(self):
         self.formGroupBox = QGroupBox()
@@ -116,22 +117,23 @@ class MainWindow(QMainWindow):
 
         self.time = QLabel()
 
-        game_layout = QGridLayout()
 
-        game_layout.addWidget(self.time, 5, 1)
+        self.game_layout = QGridLayout()
 
-        game_layout.addWidget(self.used_characters, 1, 1)
+        self.game_layout.addWidget(self.time, 5, 1)
 
-        game_layout.addWidget(self.tip_amount, 1, 2)
-        game_layout.addWidget(self.correct_tip_amount, 1, 3)
+        self.game_layout.addWidget(self.used_characters, 1, 1)
 
-        game_layout.addWidget(self.word_status, 2, 1, 1, 3, Qt.AlignmentFlag.AlignCenter)
+        self.game_layout.addWidget(self.tip_amount, 1, 2)
+        self.game_layout.addWidget(self.correct_tip_amount, 1, 3)
 
-        game_layout.addWidget(self.tip_input, 3, 1)
-        game_layout.addWidget(self.tip_button, 3, 2)
+        self.game_layout.addWidget(self.word_status, 4, 1, 2, 3, Qt.AlignmentFlag.AlignHCenter)
+
+        self.game_layout.addWidget(self.tip_input, 6, 1)
+        self.game_layout.addWidget(self.tip_button, 6, 2)
 
 
-        central_widget.setLayout(game_layout)
+        central_widget.setLayout(self.game_layout)
 
         self.setCentralWidget(central_widget)
         self.centralWidget().hide()
@@ -159,7 +161,9 @@ class MainWindow(QMainWindow):
     
     def startGame(self):
         self.controller.start(self.w.name_input.text(), self.w.mode_input.currentData(), self.w.time_limit.value())
-
+        
+        self.updateGraphic()
+        
         if(self.w.mode_input.currentData() == "casual"):
             self.curr_time = QTime(00,00,00)
             self.timer.timeout.connect(self.showTime)
@@ -188,6 +192,7 @@ class MainWindow(QMainWindow):
         self.updateCorrectTipAmount()
         self.updateTipAmount()
         self.checkGameStatus()
+        self.updateGraphic()
 
 
     def updateCorrectTipAmount(self):
@@ -228,6 +233,15 @@ class MainWindow(QMainWindow):
         timeDisplay=self.curr_time.toString('hh:mm:ss')
 
         self.time.setText(timeDisplay)
+    
+    def updateGraphic(self):
+        if not hasattr(self, 'graphic'):
+            self.graphic = QLabel(self.controller.graphic.getGraphic())
+            self.game_layout.addWidget(self.graphic, 2, 1, 1, 2, Qt.AlignmentFlag.AlignHCenter)
+        else: 
+            self.graphic.setText(self.controller.graphic.getGraphic())
+        
+
 
 def main():
 
