@@ -20,7 +20,7 @@ class GameController:
     def start(self, name: str, mode: str, minutes: int) -> None:
         word_decode = WordDecode()
         word_decode.read()
-        game_factory = GameFactory(Player(name), string.ascii_lowercase + 'üöä', 6, mode, minutes)
+        game_factory = GameFactory(Player(name), string.ascii_lowercase + 'üöä', 5, mode, minutes)
         
         self.game = game_factory.make_game()
         self.savePlayerNameToCSV(name)
