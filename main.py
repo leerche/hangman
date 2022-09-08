@@ -1,12 +1,13 @@
 import sys
 from PyQt6.QtWidgets import *
 from PyQt6 import *
-from PyQt6.QtGui import QIcon
-from PyQt6.QtCore import Qt, QTimer, QTime
+from PyQt6.QtGui import QIcon, QRegularExpressionValidator
+from PyQt6.QtCore import Qt, QTimer, QTime, QRegularExpression
+
 from controller.game_controller import GameController
 from data.encode import WordEncode
 
-
+# Dialog zum Spielstart:
 class StartGameForm(QDialog):
 
     def __init__(self, controller: GameController):
@@ -19,19 +20,32 @@ class StartGameForm(QDialog):
         self.createFormGroupBox()
         
         buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
-        buttonBox.accepted.connect(self.accept)
+        buttonBox.accepted.connect(self.validateinput)
         buttonBox.rejected.connect(self.reject)
-        
+
         mainLayout = QVBoxLayout()
         mainLayout.addWidget(self.formGroupBox)
         mainLayout.addWidget(buttonBox)
         self.setLayout(mainLayout)
 
         
+    # Validierung der Benutzereingaben:
+    def validateinput(self):
+        if len(self.name_input.text()):
+            self.accept()
+        else:
+            self.name_input.setPlaceholderText("Name Required")
+    
+    # erzeuge das Formular zum Spielstart (Spielernamen eingeben, Spielmodus auswählen):
     def createFormGroupBox(self):
         self.formGroupBox = QGroupBox()
         self.form_layout = QFormLayout()
-        self.name_input = QLineEdit()
+        rx = QRegularExpression("[A-z0-9]{20}")
+
+        self.name_input = QLineEdit(self)
+        validator = QRegularExpressionValidator(rx)
+        self.name_input.setValidator(validator)
+        
         self.name_input.setCompleter(self.completer)
         self.form_layout.addRow(QLabel("Name:"), self.name_input)
 
@@ -53,6 +67,7 @@ class StartGameForm(QDialog):
         self.form_layout.addRow(self.time_limit_label, self.time_limit)
         self.formGroupBox.setLayout(self.form_layout)
 
+    # Ändere die im Formular dargestellten Elemente bei Wechsel des Spielmodus:
     def mode_changed(self, value: str):
         if value == "Zeit":
             self.time_limit.show()
@@ -60,7 +75,8 @@ class StartGameForm(QDialog):
         else:
             self.time_limit.hide()
             self.time_limit_label.hide()
-
+            
+# Dialog zum Spielende:
 class GameEndedForm(QDialog):
 
     def __init__(self, controller: GameController, time: QLabel):
@@ -92,11 +108,13 @@ class GameEndedForm(QDialog):
         mainLayout.addWidget(buttonBox, 3, 2)
         self.setLayout(mainLayout)
 
+    # beende das Programm:
     def close(self):
         sys.exit()
-
+        
+# Hauptfenster, in welchem das Spiel stattfindet:
 class MainWindow(QMainWindow):
-
+    # Definition und Anordnung der UI-Elemente:
     def __init__(self):
         self.controller = GameController()
         super().__init__()
@@ -107,6 +125,8 @@ class MainWindow(QMainWindow):
         self.tip_input = QLineEdit()
         self.tip_input.returnPressed.connect(self.tip)
 
+        self.name = QLabel()
+       
         self.used_characters = QLabel("Benutzte Zeichen: ")
         self.word_status = QLabel()
 
@@ -121,6 +141,9 @@ class MainWindow(QMainWindow):
         self.game_layout = QGridLayout()
 
         self.game_layout.addWidget(self.time, 5, 1)
+        self.game_layout.addWidget(self.name, 0, 1, 1, 3)
+
+        self.game_layout.addWidget(self.used_characters, 1, 1)
 
         self.game_layout.addWidget(self.used_characters, 1, 1)
 
@@ -139,7 +162,7 @@ class MainWindow(QMainWindow):
         self.centralWidget().hide()
         self.initUI()
 
-
+    # zeige die UI des Spiels:
     def initUI(self):
 
         self.start_game_button = QPushButton("Start Game", self)
@@ -154,11 +177,13 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Hangman by Robert, Jonas, Lea & Christopher')
         self.show()
 
+    # Klick auf den Button, welcher den Start des Spiels auslöst:
     def buttonClicked(self):
         self.w = StartGameForm(self.controller)
         self.w.open()
         self.w.accepted.connect(self.startGame)
-    
+
+    # Start des Spiels:
     def startGame(self):
         self.controller.start(self.w.name_input.text(), self.w.mode_input.currentData(), self.w.time_limit.value())
         
@@ -178,12 +203,13 @@ class MainWindow(QMainWindow):
 
 
         self.updateWordStatus()
+        self.name.setText("Spieler: " + self.controller.getName()) 
         self.updateCorrectTipAmount()
         self.updateTipAmount()
         self.centralWidget().show()
         self.start_game_button.hide()
 
-
+    # Verarbeitung der Eingabe eines Zeichen:
     def tip(self):
         self.controller.tip(self.tip_input.text())
         self.resetTipInput()
@@ -194,19 +220,21 @@ class MainWindow(QMainWindow):
         self.checkGameStatus()
         self.updateGraphic()
 
-
+    # aktualisiere die Anzahl korrekt erratener Buchstaben:
     def updateCorrectTipAmount(self):
         self.correct_tip_amount.setText("davon Richtig: " + self.controller.correct_tip_amount())
 
+    # aktualisiere die Anzahl abgegebener Tips:
     def updateTipAmount(self):
         self.tip_amount.setText("Anzahl Tips: " + self.controller.tip_amount())
-
+    # aktualisiere die Liste der benutzen Buchstaben:
     def updateUsedCharacters(self):
         self.used_characters.setText("Benutzte Zeichen: " + self.controller.tips())
-    
+    # aktualisiere die Darstellung des Lösungswortes:
     def updateWordStatus(self):
         self.word_status.setText(self.controller.word_status())
 
+    # prüfe, ob das Spiel bereits gewonnen/verloren wurde:
     def checkGameStatus(self):
         if self.controller.isWon():
             self.timer.stop()
@@ -217,18 +245,22 @@ class MainWindow(QMainWindow):
             self.w = GameEndedForm(self.controller, self.time)
             self.w.open()
     
+    # leere die Eingabe für den zu erratenen Buchstaben
     def resetTipInput(self):
         self.tip_input.setText("")
 
+    # aktualisiere den Timer:
     def showTime(self):
         self.curr_time = self.curr_time.addSecs(1)
         timeDisplay=self.curr_time.toString('hh:mm:ss')
         self.time.setText(timeDisplay)
 
+    # aktualisiere den Countdown:
     def showCountdown(self):
         self.curr_time = self.curr_time.addSecs(-1)
         if(self.curr_time.second() == 0):
-            self.w = GameEndedForm(self.controller)
+            self.timer.stop()
+            self.w = GameEndedForm(self.controller, self.time)
             self.w.open()
         timeDisplay=self.curr_time.toString('hh:mm:ss')
 
@@ -244,14 +276,14 @@ class MainWindow(QMainWindow):
 
 
 def main():
-
+    # erstellen und verschlüsseln der Wörter:
     word_encode = WordEncode()
     word_encode.write()
-
+    # Start der App:
     app = QApplication(sys.argv)
     ex = MainWindow()
     sys.exit(app.exec())
 
-
+# Initialer Startpunkt des Programms:
 if __name__ == '__main__':
     main()

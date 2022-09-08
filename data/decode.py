@@ -24,6 +24,7 @@ class WordDecode ():
 
     # Methode für den Abruf eines zufällig ausgewählten Lösungswortes:
     def getWord(self):
+        self.read()
         value = randint(0,len(self.Decodiert) - 1)
         return Word(self.Decodiert[value])
 
